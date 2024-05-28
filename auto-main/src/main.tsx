@@ -8,10 +8,10 @@ extend(THREE);
 
 const root = createRoot(document.getElementById("root") as HTMLCanvasElement);
 
-// Configure the root, inject events optionally, set camera, etc
+// Configure the root, inject events optionally, set camera, etc 
 root.configure({
   //events: noEvents,
-  camera: { position: [0, 0, 50] },
+  camera: { position: [0, 0, 10] },
   dpr: window.devicePixelRatio,
   gl: { antialias: true, localClippingEnabled: true },
   events: noEvents,

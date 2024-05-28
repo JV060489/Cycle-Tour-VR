@@ -15,7 +15,7 @@ import {
   Mesh,
   Plane,
   Quaternion,
-  Vector3,
+  Vector3, 
 } from "three";
 import { isXIntersection } from "@coconut-xr/xinteraction";
 import { CylinderCollider, RigidBody } from "@react-three/rapier";

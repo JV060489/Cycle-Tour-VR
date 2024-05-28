@@ -70,6 +70,6 @@ def get_potentiometer_voltage():
     voltage = chan.voltage  
     return jsonify({'potentiometer_voltage': voltage})
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081) 
+    # app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=8081,ssl_context=('auto-main/cert.pem', 'auto-main/key.pem'))

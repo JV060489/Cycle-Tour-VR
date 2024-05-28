@@ -12,7 +12,7 @@ type State = {
   left: boolean;
   right: boolean;
   keyboardSpeed: number;
-  keyboardSteering: number;
+  keyboardSteering: number; 
   nauterlichSpeed: number;
   natuerlichSteering: number;
   steering: number;
@@ -54,16 +54,20 @@ export function Speed() {
     const fetchData = async () => {
       try {
         const [speedResp, steeringResp] = await Promise.all([
-          fetch('http://localhost:8081/speed'),
-          fetch('http://localhost:8081/potentiometer'),
+          fetch('https://192.168.76.143:8081/speed'),
+          fetch('https://192.168.76.143:8081/potentiometer'),
         ]);
+        console.log(speedResp)
+
+
+
 
         const speedData = await speedResp.json();
         const steeringData = await steeringResp.json();
         console.log(speedData)
 
         setSpeed1(speedData.speed_level); // Update the store with fetched speed
-        setPotentiometerValue(steeringData.potentiometer_voltage); 
+        setPotentiometerValue(steeringData.potentiometer_voltage);
         console.log(speedData.speed_level)
         console.log(steeringData.potentiometer_voltage)
 
@@ -71,7 +75,7 @@ export function Speed() {
         console.error('Error fetching data:', error);
       }
     };
-    
+
 
     fetchData();
     const intervalId = setInterval(fetchData, 500); // Fetch data every 500ms
@@ -83,7 +87,7 @@ export function Speed() {
   return (
     <>
     </>
-  ); 
+  );
 }
 
 export const useStore = create(
@@ -102,21 +106,21 @@ export const useStore = create(
         speed1,
         potentiometerValue,
       } = get();
-      const speed = nauterlichSpeed + keyboardSpeed + speed1 * 10;
-      const steering = keyboardSteering + natuerlichSteering + (potentiometerValue - 1.65) *10;
+      const speed = nauterlichSpeed + keyboardSpeed + speed1 * 4;
+      const steering = keyboardSteering + natuerlichSteering + potentiometerValue ;
 
       set({ steering, speed });
       for (const ref of motorRefs) {
         if (ref.current == null) {
           continue;
         }
-        ref.current.configureMotorVelocity(speed * 110, 1000);
+        ref.current.configureMotorVelocity(speed, 1000);
       }
       for (const ref of steeringRefs) {
         if (ref.current == null) {
           continue;
         }
-        ref.current.configureMotorPosition(steering * 0.25, 1000000, 5);
+        ref.current.configureMotorPosition(steering, 1000000, 5);
       }
     },
     setSpeed1(speed1: number) {
@@ -141,19 +145,19 @@ export const useStore = create(
     },
     updateKeyboard() {
       const { up, down, left, right } = get();
-      let keyboardSpeed = 0 ;
+      let keyboardSpeed = 0;
       let keyboardSteering = 0;
       if (up) {
-        keyboardSpeed += 0.4;
+        keyboardSpeed += 10;
       }
       if (down) {
-        keyboardSpeed -= 0.4;
+        keyboardSpeed -= 20;
       }
       if (right) {
-        keyboardSteering += 200;
+        keyboardSteering += 50;
       }
       if (left) {
-        keyboardSteering -= 200;
+        keyboardSteering -= 50;
       }
       set({
         keyboardSpeed,

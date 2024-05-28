@@ -8,21 +8,24 @@ import { XWebPointers } from "@coconut-xr/xinteraction/react";
 import {
   CuboidCollider,
   CylinderCollider,
-  Physics,
+  Physics,    
   RapierRigidBody,
   RigidBody,
   interactionGroups,
-  useRevoluteJoint,   
-  
+  useRevoluteJoint,
+
 } from "@react-three/rapier";
 import { Suspense, useEffect, useRef } from "react";
 import { Model as Car } from "./car.js";
-import { Environment, Gltf } from "@react-three/drei";
+import { Environment, Gltf, OrbitControls } from "@react-three/drei";
 import { Euler, Quaternion } from "three";
 import { useStore } from "./state.js";
 import { Controllers, Hands } from "@coconut-xr/natuerlich/defaults";
 import { EngineAudio } from "./sound.js";
 import { Speed } from "./state.js";
+import { Cycle } from "./cycle.js";
+import { Canvas } from '@react-three/fiber';
+import { Box, Cylinder } from '@react-three/drei';
 
 const options: XRSessionInit = {
   requiredFeatures: ["local-floor"],
@@ -43,13 +46,14 @@ export default function App() {
   return (
     <>
       <XR />
-      <Speed/>
+      <OrbitControls/>
+      <Speed />
       <Environment preset="sunset" blur={0.2} background />
       <XWebPointers />
       <Suspense>
         <Physics
           updatePriority={-50}
-          
+
           maxStabilizationIterations={100}
           maxVelocityFrictionIterations={100}
           maxVelocityIterations={200}
@@ -74,7 +78,46 @@ const wheelDefaultOrientation = new Quaternion().setFromEuler(
 
 const { motorRefs, steeringRefs } = useStore.getState();
 
+// function VisualColliders() {
+//   const wheelDefaultOrientation = [0, 0, Math.PI / 2]; // Adjust as needed for visualization
+
+//   // Visual representation of each collider
+//   return (
+//     <>
+//       {/* Main body */}
+//       <Box args={[0.3, 1, 2]} position={[0, 0.85, 0]} wireframe>
+//         <meshStandardMaterial attach="material" color="red" wireframe />
+//       </Box>
+
+//       {/* Steering boxes */}
+//       <Box args={[0.1, 0.1, 0.1]} position={[0.5 * 0.35, 0.4, -3 * 0.35]} wireframe>
+//         <meshStandardMaterial attach="material" color="blue" wireframe />
+//       </Box>
+//       <Box args={[0.1, 0.1, 0.1]} position={[-0.5 * 0.35, 0.4, -3 * 0.35]} wireframe>
+//         <meshStandardMaterial attach="material" color="blue" wireframe />
+//       </Box>
+
+//       {/* Wheel cylinders */}
+//       <Cylinder args={[0.35, 0.35, 0.2, 32]} position={[1 * 0.35, 0.4, 3 * 0.35]} rotation={wheelDefaultOrientation} wireframe>
+//         <meshStandardMaterial attach="material" color="green" wireframe />
+//       </Cylinder>
+//       <Cylinder args={[0.35, 0.35, 0.2, 32]} position={[-1 * 0.35, 0.4, 3 * 0.35]} rotation={wheelDefaultOrientation} wireframe>
+//         <meshStandardMaterial attach="material" color="green" wireframe />
+//       </Cylinder>
+//       <Cylinder args={[0.35, 0.35, 0.2, 32]} position={[1 * 0.35, 0.4, -3 * 0.35]} rotation={wheelDefaultOrientation} wireframe>
+//         <meshStandardMaterial attach="material" color="green" wireframe />
+//       </Cylinder>
+//       <Cylinder args={[0.35, 0.35, 0.2, 32]} position={[-1 * 0.35, 0.4, -3 * 0.35]} rotation={wheelDefaultOrientation} wireframe>
+//         <meshStandardMaterial attach="material" color="green" wireframe />
+//       </Cylinder>
+//     </>
+//   );
+// }
+
+
+
 function CarPhysics() {
+
   const body = useRef<RapierRigidBody>(null);
 
   const wheel1 = useRef<RapierRigidBody>(null);
@@ -120,7 +163,7 @@ function CarPhysics() {
     [0, 1, 0],
   ]);
 
-  const friction = 1.3
+  const friction = 1.5
   const frictionFront = 1.4
   const weight = 10
   const weightWheels = 0.5
@@ -132,13 +175,13 @@ function CarPhysics() {
         <CuboidCollider
           collisionGroups={interactionGroups(1, 1)}
           position={[0, 0.85, 0]}
-          args={[0.8, 0.7, 2.8]}
+          args={[0.3, 0.7, 2]}
           mass={weight}
         >
-          <Car scale={0.33} position={[0, -0.85, 0]} rotation-y={Math.PI} />
-          <EngineAudio />
-          <NonImmersiveCamera position={[-0.5, 0.4, 0.5]} />
-          <ImmersiveSessionOrigin position={[-0.5, -0.9, 0.5]}>
+          <Cycle scale={1} position={[-0.5, 0.26, 1.5]} />
+          {/* <EngineAudio /> */}
+          {/* <NonImmersiveCamera position={[-0.5, 1.5, 5]} /> */}
+          <ImmersiveSessionOrigin position={[-0.5, 1.5, 3]}>
             <Hands type="grab" />
             <Controllers type="grab" />
           </ImmersiveSessionOrigin>
@@ -148,7 +191,7 @@ function CarPhysics() {
         collisionGroups={interactionGroups([], [])}
         ref={stearing1}
         canSleep={false}
-        position={[2.5 * 0.35, 0.4, -5 * 0.35]}
+        position={[0.5 * 0.35, 0.4, -3 * 0.35]}
         restitution={0.01}
       >
         <CuboidCollider args={[0.1, 0.1, 0.1]} />
@@ -156,7 +199,7 @@ function CarPhysics() {
       <RigidBody
         collisionGroups={interactionGroups([], [])}
         ref={stearing2}
-        position={[-2.5 * 0.35, 0.4, -5 * 0.35]}
+        position={[-0.5 * 0.35, 0.4, -3 * 0.35]}
         canSleep={false}
         restitution={0.01}
       >
@@ -165,7 +208,7 @@ function CarPhysics() {
       <RigidBody
         canSleep={false}
         ref={wheel1}
-        position={[3 * 0.35, 0.4, 5 * 0.35]}
+        position={[0.5 * 0.35, 0.4, 3 * 0.35]}
         colliders={false}
         restitution={restitution}
         friction={friction}
@@ -180,7 +223,7 @@ function CarPhysics() {
       <RigidBody
         canSleep={false}
         ref={wheel2}
-        position={[-3 * 0.35, 0.4, 5 * 0.35]}
+        position={[-0.5 * 0.35, 0.4, 3 * 0.35]}
         colliders={false}
         restitution={restitution}
         friction={friction}
@@ -195,10 +238,10 @@ function CarPhysics() {
       <RigidBody
         canSleep={false}
         ref={wheel3}
-        position={[3 * 0.35, 0.4, -5 * 0.35]}
+        position={[0.5 * 0.35, 0.4, -3 * 0.35]}
         colliders={false}
         restitution={restitution}
-        friction={frictionFront}
+        friction={friction}
         mass={weightWheels}
         collisionGroups={interactionGroups(0, 0)}
       >
@@ -210,10 +253,10 @@ function CarPhysics() {
       <RigidBody
         canSleep={false}
         ref={wheel4}
-        position={[-3 * 0.35, 0.4, -5 * 0.35]}
+        position={[-0.5 * 0.35, 0.4, -3 * 0.35]}
         colliders={false}
         restitution={restitution}
-        friction={frictionFront}
+        friction={friction}
         mass={weightWheels}
         collisionGroups={interactionGroups(0, 0)}
       >
