@@ -54,8 +54,8 @@ export function Speed() {
     const fetchData = async () => {
       try {
         const [speedResp, steeringResp] = await Promise.all([
-          fetch('https://192.168.76.143:8081/speed'),
-          fetch('https://192.168.76.143:8081/potentiometer'),
+          fetch('https://192.168.137.230:8081/speed'),
+          fetch('https://192.168.137.230:8081/potentiometer'),
         ]);
         console.log(speedResp)
 
@@ -64,12 +64,11 @@ export function Speed() {
 
         const speedData = await speedResp.json();
         const steeringData = await steeringResp.json();
-        console.log(speedData)
 
         setSpeed1(speedData.speed_level); // Update the store with fetched speed
         setPotentiometerValue(steeringData.potentiometer_voltage);
         console.log(speedData.speed_level)
-        console.log(steeringData.potentiometer_voltage)
+        
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -106,9 +105,10 @@ export const useStore = create(
         speed1,
         potentiometerValue,
       } = get();
-      const speed = nauterlichSpeed + keyboardSpeed + speed1 * 4;
-      const steering = keyboardSteering + natuerlichSteering + potentiometerValue ;
-
+      const speed =  speed1 * 4;
+      const valueWithTwoDecimals = parseFloat(potentiometerValue.toFixed(2));
+      const steering = -(valueWithTwoDecimals - 1.69) * 100;
+      console.log("Steering:", -(valueWithTwoDecimals - 1.45));
       set({ steering, speed });
       for (const ref of motorRefs) {
         if (ref.current == null) {

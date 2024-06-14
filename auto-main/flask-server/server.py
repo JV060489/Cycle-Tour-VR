@@ -38,8 +38,9 @@ def sensor_callback1():
     current_time = time.time()
     if last_time is not None:
         elapsed_time = current_time - last_time
-        speed = wheel_circumference / elapsed_time
-        speed_level = min(int(speed), 100)
+        # speed = wheel_circumference / elapsed_time
+        speed_level = wheel_circumference / elapsed_time
+        # speed_level = min(int(speed), 100)
     last_time = current_time
 
 def sensor_callback2():
@@ -62,8 +63,8 @@ def index():
 @app.route('/speed', methods=['GET'])
 def get_speed():
     if current_time1 and current_time2 and current_time1 > current_time2:
-        return jsonify({'speed_level': -2.5})
-    return jsonify({'speed_level': speed_level})
+        return jsonify({'speed_level': -1})
+    return jsonify({'speed_level': speed_level })
 
 @app.route('/potentiometer', methods=['GET'])
 def get_potentiometer_voltage():
@@ -72,4 +73,4 @@ def get_potentiometer_voltage():
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8081)
-    app.run(host='0.0.0.0', port=8081,ssl_context=('auto-main/cert.pem', 'auto-main/key.pem'))
+    app.run(host='0.0.0.0', port=8081, ssl_context=('cert.pem', 'key.pem'))

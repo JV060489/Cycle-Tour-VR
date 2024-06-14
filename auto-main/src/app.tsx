@@ -46,14 +46,13 @@ export default function App() {
   return (
     <>
       <XR />
-      <OrbitControls/>
+      
       <Speed />
       <Environment preset="sunset" blur={0.2} background />
       <XWebPointers />
       <Suspense>
         <Physics
           updatePriority={-50}
-
           maxStabilizationIterations={100}
           maxVelocityFrictionIterations={100}
           maxVelocityIterations={200}
@@ -178,10 +177,10 @@ function CarPhysics() {
           args={[0.3, 0.7, 2]}
           mass={weight}
         >
-          <Cycle scale={1} position={[-0.5, 0.26, 1.5]} />
+          <Cycle scale={0.9} position={[-0.5, 0.26, 1.5]} />
           {/* <EngineAudio /> */}
-          {/* <NonImmersiveCamera position={[-0.5, 1.5, 5]} /> */}
-          <ImmersiveSessionOrigin position={[-0.5, 1.5, 3]}>
+          <NonImmersiveCamera position={[-0.5, 1.3, 5]} /> 
+          <ImmersiveSessionOrigin position={[-0.5, 0.3, 2]}>
             <Hands type="grab" />
             <Controllers type="grab" />
           </ImmersiveSessionOrigin>

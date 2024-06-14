@@ -85,8 +85,6 @@ export function Cycle(props: JSX.IntrinsicElements['group']) {
     return outputMin + ((outputMax - outputMin) * (value - inputMin) / (inputMax - inputMin));
   };
 
-  
-
   const handlebarRef = useRef<Mesh>(null);
   const cubeRef = useRef<Group>(null);
   useFrame(() => {
@@ -96,8 +94,8 @@ export function Cycle(props: JSX.IntrinsicElements['group']) {
       const pivotZ = -0.96;   // Adjust these values as needed
 
       handlebarRef.current.position.set(pivotX, pivotY, pivotZ);
-   
 
+      
       // Assuming potentiometerValue ranges from 0 to 1 and maps to handlebar rotation
       const rotationValue = mapRange(steeringValue, 100, -100, -Math.PI / 2, Math.PI / 2);
       handlebarRef.current?.quaternion.setFromAxisAngle(
